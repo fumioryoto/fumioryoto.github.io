@@ -351,6 +351,20 @@ function checkAuth() {
             publishBtn.addEventListener('click', publishToPublic);
         }
 
+        // Show/hide disconnect button based on token
+        const disconnectBtn = document.getElementById('disconnectBtn');
+        if (disconnectBtn) {
+            const token = localStorage.getItem('github-token');
+            disconnectBtn.style.display = token ? '' : 'none';
+            disconnectBtn.addEventListener('click', () => {
+                if (confirm('🔓 Disconnect GitHub? You\'ll need to reconnect to publish.')) {
+                    localStorage.removeItem('github-token');
+                    disconnectBtn.style.display = 'none';
+                    alert('✅ GitHub disconnected.');
+                }
+            });
+        }
+
         // Initialize import functionality
         const importBtn = document.getElementById('importBtn');
         if (importBtn) {
@@ -847,23 +861,101 @@ function publishToPublic() {
     
     const jsonString = JSON.stringify(portfolioData, null, 2);
     
-    // Copy to clipboard
-    navigator.clipboard.writeText(jsonString).then(() => {
-        alert(`✅ Portfolio data copied to clipboard!
+    // Check if GitHub token is stored
+    const githubToken = localStorage.getItem('github-token');
+    
+    if (!githubToken) {
+        // Show setup instructions
+        const setupLink = prompt(`🔐 First-time setup required!
 
-📋 Next steps:
-1. Go to: portfolio-data.json in your repository
-2. Replace ALL content with the copied data
-3. Commit and push the change
-4. All visitors will now see your portfolio!
+This will automatically publish your portfolio to GitHub.
 
-The data includes:
-- ${experiences.length} experience(s)
-- ${projects.length} project(s)`);
-    }).catch(err => {
-        alert('❌ Failed to copy. Try the Export button instead.');
-        console.error(err);
-    });
+⚠️ You need a Personal Access Token from GitHub:
+1. Go to: https://github.com/settings/tokens
+2. Click "Generate new token (classic)"
+3. Give it permissions: repo (full control of private repositories)
+4. Copy the token
+5. Paste it here when prompted
+
+Token (keep this secret!):`);
+        
+        if (!setupLink) return;
+        
+        localStorage.setItem('github-token', setupLink);
+        publishToPublicWithAPI(jsonString);
+    } else {
+        publishToPublicWithAPI(jsonString);
+    }
+}
+
+async function publishToPublicWithAPI(jsonString) {
+    const token = localStorage.getItem('github-token');
+    const owner = 'fumioryoto'; // Your GitHub username
+    const repo = 'fumioryoto.github.io'; // Your repo name
+    const filePath = 'portfolio-data.json';
+    
+    try {
+        // First, get the current file to get its SHA (required for updates)
+        const getResponse = await fetch(`https://api.github.com/repos/${owner}/${repo}/contents/${filePath}`, {
+            headers: {
+                'Authorization': `token ${token}`,
+                'Accept': 'application/vnd.github.v3+raw'
+            }
+        });
+        
+        if (!getResponse.ok) {
+            throw new Error('Failed to access repository. Check your token and repository details.');
+        }
+        
+        // Get the current file to extract SHA
+        const getResponse2 = await fetch(`https://api.github.com/repos/${owner}/${repo}/contents/${filePath}`, {
+            headers: {
+                'Authorization': `token ${token}`
+            }
+        });
+        
+        const fileData = await getResponse2.json();
+        const currentSha = fileData.sha;
+        
+        // Update the file
+        const updateResponse = await fetch(`https://api.github.com/repos/${owner}/${repo}/contents/${filePath}`, {
+            method: 'PUT',
+            headers: {
+                'Authorization': `token ${token}`,
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+                message: `📈 Portfolio update: ${new Date().toLocaleString()}`,
+                content: btoa(jsonString), // Base64 encode the content
+                sha: currentSha
+            })
+        });
+        
+        if (updateResponse.ok) {
+            alert(`✅ Published successfully!
+
+Your portfolio is now live and synced across all browsers.
+
+Changes:
+- Experiences: ${jsonString.match(/"title":/g)?.length || 0}
+- Projects: ${jsonString.match(/"title":/g)?.length || 0}
+
+GitHub will update in ~1-2 minutes.`);
+        } else {
+            const error = await updateResponse.json();
+            throw new Error(error.message || 'Failed to update repository');
+        }
+    } catch (error) {
+        console.error('Publish error:', error);
+        alert(`❌ Publishing failed: ${error.message}
+
+Fallback: Data copied to clipboard. Paste manually in portfolio-data.json`);
+        
+        // Fallback to clipboard
+        navigator.clipboard.writeText(jsonString).then(() => {
+            alert('Data copied to clipboard as fallback.');
+        });
+    }
 }
 
 function importPortfolioData() {
