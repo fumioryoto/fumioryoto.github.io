@@ -826,22 +826,22 @@ img {
 
 @media (max-width: 768px) {
     .badge-1 {
-        top: 30%;
-        left: -120px;
+        top: 25%;
+        left: -15px;
         right: auto;
         bottom: auto;
     }
     
     .badge-2 {
-        top: 40%;
-        right: -120px;
+        top: 45%;
+        right: -15px;
         left: auto;
         bottom: auto;
     }
     
     .badge-3 {
-        bottom: -70px;
-        right: -100px;
+        bottom: -25px;
+        right: -25px;
         left: auto;
         top: auto;
     }
