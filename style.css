@@ -826,24 +826,24 @@ img {
 
 @media (max-width: 768px) {
     .badge-1 {
-        top: auto;
-        bottom: 80px;
-        right: -10px;
-        left: auto;
+        top: 30%;
+        left: -120px;
+        right: auto;
+        bottom: auto;
     }
     
     .badge-2 {
-        top: auto;
-        bottom: 25px;
-        right: 5px;
+        top: 40%;
+        right: -120px;
         left: auto;
+        bottom: auto;
     }
     
     .badge-3 {
+        bottom: -70px;
+        right: -100px;
+        left: auto;
         top: auto;
-        bottom: 50px;
-        left: -10px;
-        right: auto;
     }
 }
 
