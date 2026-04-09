@@ -4,7 +4,9 @@ const AppState = {
     currentSection: 'home',
     isMenuOpen: false,
     isLoaded: false,
-    portfolioDataLoaded: false
+    portfolioDataLoaded: false,
+    publicExperiences: [],
+    publicProjects: []
 };
 
 document.addEventListener('DOMContentLoaded', () => {
@@ -16,13 +18,15 @@ function loadPortfolioDataFile() {
     fetch('data.json')
         .then(response => response.json())
         .then(data => {
-            // If data.json has data and localStorage is empty, load it
+            // Store public data in AppState for immediate display
             if (data.experiences && data.experiences.length > 0) {
+                AppState.publicExperiences = data.experiences;
                 if (!localStorage.getItem('portfolio-experience-posts')) {
                     localStorage.setItem('portfolio-experience-posts', JSON.stringify(data.experiences));
                 }
             }
             if (data.projects && data.projects.length > 0) {
+                AppState.publicProjects = data.projects;
                 if (!localStorage.getItem('portfolio-dashboard-posts')) {
                     localStorage.setItem('portfolio-dashboard-posts', JSON.stringify(data.projects));
                 }
@@ -313,6 +317,13 @@ function checkAuth() {
         if (workDashboardBtn) {
             workDashboardBtn.style.display = 'none';
         }
+        
+        // Render projects for public view
+        const dashboardPosts = document.getElementById('dashboardPosts');
+        if (dashboardPosts) {
+            const posts = loadDashboardPosts();
+            renderDashboardPosts(posts, null, dashboardPosts);
+        }
     } else {
         // Show dashboard if authenticated
         if (dashboardSection) {
@@ -345,36 +356,42 @@ function checkAuth() {
             exportBtn.addEventListener('click', exportPortfolioData);
         }
 
-        // Initialize  form handlers if authenticated
-    const dashboardForm = document.getElementById('dashboardForm');
-    const dashboardReset = document.getElementById('dashboardReset');
-    const dashboardList = document.getElementById('dashboardList');
+        // Initialize form handlers if authenticated
+        const dashboardForm = document.getElementById('dashboardForm');
+        const dashboardReset = document.getElementById('dashboardReset');
+        const dashboardList = document.getElementById('dashboardList');
+        const dashboardPosts = document.getElementById('dashboardPosts');
 
-    if (!dashboardForm || !dashboardReset || !dashboardList) return;
+        if (dashboardForm && dashboardReset && dashboardList && dashboardPosts) {
+            dashboardForm.addEventListener('submit', (event) => {
+                event.preventDefault();
+                const formData = new FormData(dashboardForm);
+                const post = {
+                    title: formData.get('dashboardTitle')?.toString() || '',
+                    description: formData.get('dashboardDescription')?.toString() || '',
+                    tags: formData.get('dashboardTags')?.toString() || '',
+                    link: formData.get('dashboardLink')?.toString() || '',
+                    image: formData.get('dashboardImage')?.toString() || '',
+                    createdAt: new Date().toISOString(),
+                    id: formData.get('dashboardIndex')?.toString() || Date.now().toString()
+                };
 
-    dashboardForm.addEventListener('submit', (event) => {
-        event.preventDefault();
-        const formData = new FormData(dashboardForm);
-        const post = {
-            title: formData.get('dashboardTitle')?.toString() || '',
-            description: formData.get('dashboardDescription')?.toString() || '',
-            tags: formData.get('dashboardTags')?.toString() || '',
-            link: formData.get('dashboardLink')?.toString() || '',
-            image: formData.get('dashboardImage')?.toString() || '',
-            createdAt: new Date().toISOString(),
-            id: formData.get('dashboardIndex')?.toString() || Date.now().toString()
-        };
+                const posts = saveDashboardPost(post);
+                renderDashboardPosts(posts, dashboardList, dashboardPosts);
+                dashboardForm.reset();
+                document.getElementById('dashboardIndex').value = '';
+            });
 
-        const posts = saveDashboardPost(post);
-        renderDashboardPosts(posts, dashboardList, dashboardPosts);
-        dashboardForm.reset();
-        document.getElementById('dashboardIndex').value = '';
-    });
-
-    dashboardReset.addEventListener('click', () => {
-        dashboardForm.reset();
-        document.getElementById('dashboardIndex').value = '';
-    });
+            dashboardReset.addEventListener('click', () => {
+                dashboardForm.reset();
+                document.getElementById('dashboardIndex').value = '';
+            });
+            
+            // Initial render of projects for public display
+            const posts = loadDashboardPosts();
+            renderDashboardPosts(posts, dashboardList, dashboardPosts);
+        }
+    }
 }
 
 function saveDashboardPost(post) {
@@ -392,6 +409,11 @@ function saveDashboardPost(post) {
 }
 
 function loadDashboardPosts() {
+    // Return public data from AppState first (for new browsers)
+    if (AppState.publicProjects && AppState.publicProjects.length > 0) {
+        return AppState.publicProjects;
+    }
+    
     const rawPosts = localStorage.getItem('portfolio-dashboard-posts');
     if (!rawPosts) return [];
 
@@ -643,6 +665,11 @@ function saveExperiencePost(experience) {
 }
 
 function loadExperiencePosts() {
+    // Return public data from AppState first (for new browsers)
+    if (AppState.publicExperiences && AppState.publicExperiences.length > 0) {
+        return AppState.publicExperiences;
+    }
+    
     const experiences = localStorage.getItem('portfolio-experience-posts');
     
     // If no data exists, return empty array (or seed data for first visit)
@@ -803,7 +830,6 @@ function exportPortfolioData() {
     URL.revokeObjectURL(url);
     
     alert('✅ Portfolio data exported!\n\nNext steps:\n1. Update data.json in your GitHub repo\n2. Replace its content with the exported data\n3. Commit the changes\n4. All visitors will see your portfolio!');
-}
 }
 
 function importPortfolioData() {
