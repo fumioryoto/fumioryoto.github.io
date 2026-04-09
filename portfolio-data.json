@@ -1,4 +1,73 @@
 {
-  "experiences": [],
-  "projects": []
+  "experiences": [
+    {
+      "title": "Penetration Tester & Bug Bounty Hunter",
+      "company": "at Hackerone, Bugcrowd and Fiverr.",
+      "period": "2025 - Present",
+      "location": "",
+      "description": "Identify, exploit, and report vulnerabilities in web applications, APIs, and associated backend services.",
+      "achievements": "Perform manual deep-dive testing of web apps against OWASP Top 10 (XSS, SQLi, IDOR, SSRF, etc.).\n\nActively hunt on HackerOne and Bugcrowd, submitting clear, reproducible Proof-of-Concept reports.\n\nProvide scoped web app security testing gigs on Fiverr with actionable remediation steps.\n\nValidate and triage web vulnerabilities to filter false positives.",
+      "tags": "SOC, Offensive Security, Recon, Automation, Docker, AWS, CVE Analysis, Bug Bounty ,Penetration Testing",
+      "isCurrent": true,
+      "createdAt": "2026-04-09T22:02:30.068Z",
+      "id": "1775772150068"
+    }
+  ],
+  "projects": [
+    {
+      "title": "WordPress Quiz Maker SQL Injection Exploit (CVE-2025-10042)",
+      "description": "This script exploits an SQL Injection vulnerability in WordPress Quiz Maker plugin (≤ 6.7.0.56) by injecting payloads via an HTTP header (default: X-Forwarded-For).",
+      "tags": "Exploits,Wordpress,Plugins,Quiz-maker,Python-script",
+      "link": "https://github.com/fumioryoto/Quiz-Maker-SQL-Injection-CVE-2025-10042",
+      "image": "https://i.ibb.co/9RLvHWL/quiz.png",
+      "createdAt": "2026-04-09T21:32:08.263Z",
+      "id": "1775770328263"
+    },
+    {
+      "title": "Advanced Vulnerability Scanner & Exploiter for Next.js App Router",
+      "description": "NextRce is a high-performance, multithreaded security tool designed to detect and exploit CVE-2025-55182. It specifically targets the React Server Components (RSC) implementation within the Next.js App Router architecture.\n\nBy manipulating the serialization process in Server Actions, NextRce injects a crafted payload to achieve Remote Code Execution (RCE) on vulnerable instances. It features a smart detection engine that automatically distinguishes between vulnerable App Router architectures and safe legacy Pages Routers, ensuring efficiency during mass scans.",
+      "tags": "CVE-2025-55182,NextRce,Remote Code Execution,Fingerprinting,Payload Injection",
+      "link": "https://github.com/fumioryoto/NextRCE",
+      "image": "https://i.ibb.co/MkDTqrWy/images.jpg",
+      "createdAt": "2026-04-09T21:27:14.464Z",
+      "id": "1775770034464"
+    },
+    {
+      "title": "React2Shell",
+      "description": "Nuclei template for detecting React2Shell (CVE-2025-55182 and CVE-2025-66478)\nA command-line tool for detecting CVE-2025-55182 and CVE-2025-66478 in Next.js applications using React Server Components.",
+      "tags": "exploits,react2shell,CVE,NextRce",
+      "link": "https://github.com/fumioryoto/React2shell-scanner",
+      "image": "https://i.ibb.co/Zp6C1wcJ/ss.png",
+      "createdAt": "2026-04-09T21:15:23.759Z",
+      "id": "1775769323759"
+    },
+    {
+      "title": "Simple keylogger that persistently sends data to telegram bot",
+      "description": "What Happens When Run\nThe script checks if it's already installed in the hidden location\nIf not, it copies itself to %APPDATA%/winlog.exe\nSets the file as hidden and system file\nAdds itself to Windows startup registry\nLaunches the new hidden instance\nStarts capturing keystrokes\nSends logs to Telegram at specified intervals\n",
+      "tags": "malware,spyware,keylogger-simulation",
+      "link": "https://github.com/fumioryoto/keylogger",
+      "image": "https://i.ibb.co/9HPbmLr5/keylogger.png",
+      "createdAt": "2026-04-09T21:04:30.087Z",
+      "id": "1775768670087"
+    },
+    {
+      "title": "Terrapin Attack Exploit",
+      "description": "The Terrapin attack (CVE-2023-48795) is a vulnerability in the SSH protocol that allows attackers to downgrade the security of the connection by manipulating sequence numbers during the handshake process. This scanner helps administrators identify vulnerable SSH servers and take appropriate action.",
+      "tags": "Exploits,CVE-2023-48795, SSH, terrapin-attack",
+      "link": "https://github.com/fumioryoto/Terrapin-attack",
+      "image": "https://i.ibb.co/kgPyCVWt/terrapin.png",
+      "createdAt": "2026-04-09T20:58:48.343Z",
+      "id": "1775768328343"
+    },
+    {
+      "title": "Kubio AI Page Builder <= 2.5.1 - Unauthenticated Local File Inclusion",
+      "description": "The Kubio AI Page Builder plugin for WordPress is vulnerable to Local File Inclusion in all versions up to, and including, 2.5.1 via the `kubio_hybrid_theme_load_template` function. This makes it possible for unauthenticated attackers to include and execute arbitrary files on the server, allowing the execution of any PHP code in those files..",
+      "tags": "Exploits,CVE-2025-2294,Wordpress, Plugins",
+      "link": "https://github.com/fumioryoto/CVE-2025-2294-Kubio-2.5.1-LFi-Checker",
+      "image": "https://i.ibb.co/gLc28vdD/exploit.png",
+      "createdAt": "2026-04-09T20:52:11.446Z",
+      "id": "1775767931446"
+    }
+  ],
+  "exportedAt": "2026-04-09T22:28:17.121Z"
 }
