@@ -318,6 +318,13 @@ function checkAuth() {
             workDashboardBtn.style.display = 'none';
         }
         
+        // Render experiences for public view
+        const dashboardExperiences = document.getElementById('dashboardExperiences');
+        if (dashboardExperiences) {
+            const experiences = loadExperiencePosts();
+            renderPublicExperience(experiences, dashboardExperiences);
+        }
+        
         // Render projects for public view
         const dashboardPosts = document.getElementById('dashboardPosts');
         if (dashboardPosts) {
