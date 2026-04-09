@@ -12,11 +12,11 @@ document.addEventListener('DOMContentLoaded', () => {
 });
 
 function loadPortfolioDataFile() {
-    // Load portfolio-data.json to sync with public data
-    fetch('portfolio-data.json')
+    // Load data.json to sync with public data
+    fetch('data.json')
         .then(response => response.json())
         .then(data => {
-            // If portfolio-data.json has data and localStorage is empty, load it
+            // If data.json has data and localStorage is empty, load it
             if (data.experiences && data.experiences.length > 0) {
                 if (!localStorage.getItem('portfolio-experience-posts')) {
                     localStorage.setItem('portfolio-experience-posts', JSON.stringify(data.experiences));
@@ -802,7 +802,7 @@ function exportPortfolioData() {
     document.body.removeChild(a);
     URL.revokeObjectURL(url);
     
-    alert('✅ Portfolio data exported!\n\nNext steps:\n1. Update portfolio-data.json in your GitHub repo\n2. Replace its content with the exported data\n3. Commit the changes\n4. All visitors will see your portfolio!');
+    alert('✅ Portfolio data exported!\n\nNext steps:\n1. Update data.json in your GitHub repo\n2. Replace its content with the exported data\n3. Commit the changes\n4. All visitors will see your portfolio!');
 }
 }
 
