@@ -345,6 +345,12 @@ function checkAuth() {
             exportBtn.addEventListener('click', exportPortfolioData);
         }
 
+        // Initialize publish functionality
+        const publishBtn = document.getElementById('publishBtn');
+        if (publishBtn) {
+            publishBtn.addEventListener('click', publishToPublic);
+        }
+
         // Initialize import functionality
         const importBtn = document.getElementById('importBtn');
         if (importBtn) {
@@ -823,6 +829,41 @@ function exportPortfolioData() {
     URL.revokeObjectURL(url);
     
     alert('✅ Portfolio data exported! Now update the portfolio-data.json file in your repository with this exported data to make changes public.');
+}
+
+function publishToPublic() {
+    const experiences = loadExperiencePosts();
+    const projects = loadDashboardPosts();
+    
+    if (experiences.length === 0 && projects.length === 0) {
+        alert('❌ No data to publish. Add some experiences or projects first.');
+        return;
+    }
+    
+    const portfolioData = {
+        experiences: experiences,
+        projects: projects
+    };
+    
+    const jsonString = JSON.stringify(portfolioData, null, 2);
+    
+    // Copy to clipboard
+    navigator.clipboard.writeText(jsonString).then(() => {
+        alert(`✅ Portfolio data copied to clipboard!
+
+📋 Next steps:
+1. Go to: portfolio-data.json in your repository
+2. Replace ALL content with the copied data
+3. Commit and push the change
+4. All visitors will now see your portfolio!
+
+The data includes:
+- ${experiences.length} experience(s)
+- ${projects.length} project(s)`);
+    }).catch(err => {
+        alert('❌ Failed to copy. Try the Export button instead.');
+        console.error(err);
+    });
 }
 
 function importPortfolioData() {
