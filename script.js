@@ -3,12 +3,39 @@ const AppState = {
     currentTheme: 'dark',
     currentSection: 'home',
     isMenuOpen: false,
-    isLoaded: false
+    isLoaded: false,
+    portfolioDataLoaded: false
 };
 
 document.addEventListener('DOMContentLoaded', () => {
-    initializeApp();
+    loadPortfolioDataFile();
 });
+
+function loadPortfolioDataFile() {
+    // Load portfolio-data.json to sync with public data
+    fetch('portfolio-data.json')
+        .then(response => response.json())
+        .then(data => {
+            // If portfolio-data.json has data and localStorage is empty, load it
+            if (data.experiences && data.experiences.length > 0) {
+                if (!localStorage.getItem('portfolio-experience-posts')) {
+                    localStorage.setItem('portfolio-experience-posts', JSON.stringify(data.experiences));
+                }
+            }
+            if (data.projects && data.projects.length > 0) {
+                if (!localStorage.getItem('portfolio-dashboard-posts')) {
+                    localStorage.setItem('portfolio-dashboard-posts', JSON.stringify(data.projects));
+                }
+            }
+            AppState.portfolioDataLoaded = true;
+            initializeApp();
+        })
+        .catch(error => {
+            console.log('Portfolio data file not found or empty, using localStorage');
+            AppState.portfolioDataLoaded = true;
+            initializeApp();
+        });
+}
 
 function initializeApp() {
     loadPreferences();
@@ -310,6 +337,18 @@ function checkAuth() {
                 localStorage.removeItem('portfolio-user');
                 window.location.reload();
             });
+        }
+
+        // Initialize export functionality
+        const exportBtn = document.getElementById('exportBtn');
+        if (exportBtn) {
+            exportBtn.addEventListener('click', exportPortfolioData);
+        }
+
+        // Initialize import functionality
+        const importBtn = document.getElementById('importBtn');
+        if (importBtn) {
+            importBtn.addEventListener('click', importPortfolioData);
         }
     }
 }
@@ -759,6 +798,60 @@ function escapeHtml(text) {
 
 function escapeAttribute(url) {
     return url.replace(/"/g, '%22').replace(/'/g, '%27');
+}
+
+function exportPortfolioData() {
+    const experiences = loadExperiencePosts();
+    const projects = loadDashboardPosts();
+    
+    const portfolioData = {
+        experiences: experiences,
+        projects: projects,
+        exportedAt: new Date().toISOString()
+    };
+    
+    // Download as JSON file
+    const jsonString = JSON.stringify(portfolioData, null, 2);
+    const blob = new Blob([jsonString], { type: 'application/json' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = `portfolio-data-${new Date().toISOString().split('T')[0]}.json`;
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    URL.revokeObjectURL(url);
+    
+    alert('✅ Portfolio data exported! Now update the portfolio-data.json file in your repository with this exported data to make changes public.');
+}
+
+function importPortfolioData() {
+    const input = document.createElement('input');
+    input.type = 'file';
+    input.accept = '.json';
+    input.onchange = (e) => {
+        const file = e.target.files[0];
+        if (!file) return;
+        
+        const reader = new FileReader();
+        reader.onload = (event) => {
+            try {
+                const data = JSON.parse(event.target.result);
+                if (data.experiences) {
+                    localStorage.setItem('portfolio-experience-posts', JSON.stringify(data.experiences));
+                }
+                if (data.projects) {
+                    localStorage.setItem('portfolio-dashboard-posts', JSON.stringify(data.projects));
+                }
+                alert('✅ Portfolio data imported! Refreshing page...');
+                window.location.reload();
+            } catch (error) {
+                alert('❌ Error importing file. Make sure it\'s valid JSON.');
+            }
+        };
+        reader.readAsText(file);
+    };
+    input.click();
 }
 
 function initMobileMenu() {
