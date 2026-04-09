@@ -746,6 +746,21 @@ img {
 @media (max-width: 768px) {
     .floating-badge {
         animation: floatBadge 4s ease-in-out infinite;
+        min-width: auto;
+        padding: 0.75rem 1rem;
+        font-size: 0.9rem;
+    }
+    
+    .floating-badge i {
+        font-size: 1.5rem;
+    }
+    
+    .badge-title {
+        font-size: 0.9rem;
+    }
+    
+    .badge-libs {
+        font-size: 0.65rem;
     }
 }
 
@@ -807,6 +822,28 @@ img {
     top: 50%;
     left: -15%;
     animation-delay: 2s;
+}
+
+@media (max-width: 768px) {
+    .badge-1 {
+        top: 5%;
+        right: 5%;
+        left: auto;
+    }
+    
+    .badge-2 {
+        top: 50%;
+        right: 5%;
+        bottom: auto;
+        left: auto;
+    }
+    
+    .badge-3 {
+        top: auto;
+        bottom: 5%;
+        left: 5%;
+        right: auto;
+    }
 }
 
 @keyframes floatBadge {
