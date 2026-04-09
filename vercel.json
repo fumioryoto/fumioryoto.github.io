@@ -1,0 +1,37 @@
+{
+  "name": "Md. Nahidul Islam Portfolio",
+  "version": 2,
+  "public": true,
+  "builds": [
+    {
+      "src": "index.html",
+      "use": "@vercel/static"
+    }
+  ],
+  "routes": [
+    {
+      "src": "/css/(.*)",
+      "dest": "/css/$1"
+    },
+    {
+      "src": "/js/(.*)",
+      "dest": "/js/$1"
+    },
+    {
+      "src": "/images/(.*)",
+      "dest": "/images/$1"
+    },
+    {
+      "src": "/(.*)",
+      "dest": "/"
+    }
+  ],
+  "env": {},
+  "regions": ["auto"],
+  "functions": {
+    "api/**.js": {
+      "memory": 128,
+      "maxDuration": 10
+    }
+  }
+}

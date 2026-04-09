@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, user-scalable=yes">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title>Login - Portfolio Dashboard</title>
+    <link rel="stylesheet" href="../style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@300;400;500;700;800;900&family=Fira+Code:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body class="body-main" data-theme="dark" data-lang="en" data-dir="ltr">
+
+    <!-- Login Container -->
+    <div class="login-container">
+        <div class="login-card">
+            <div class="login-header">
+                <div class="login-logo">
+                    <span class="logo-bracket">&lt;</span>
+                    <span class="logo-text">Dev</span>
+                    <span class="logo-bracket">Sec&gt;</span>
+                </div>
+                <h1 class="login-title">Dashboard Access</h1>
+                <p class="login-subtitle">Enter your credentials to access the portfolio dashboard</p>
+            </div>
+
+            <form id="loginForm" class="login-form">
+                <div class="form-group">
+                    <label for="username" class="form-label">Username</label>
+                    <input type="text" id="username" name="username" class="form-input" placeholder="Enter username" required>
+                </div>
+                <div class="form-group">
+                    <label for="password" class="form-label">Password</label>
+                    <input type="password" id="password" name="password" class="form-input" placeholder="Enter password" required>
+                </div>
+                <div id="loginError" class="login-error" style="display: none;"></div>
+                <button type="submit" class="btn btn-primary btn-login">
+                    <span>Login</span>
+                    <i class="fas fa-sign-in-alt"></i>
+                </button>
+            </form>
+
+            <div class="login-footer">
+                <a href="../" class="login-back-link">
+                    <i class="fas fa-arrow-left"></i>
+                    Back to Portfolio
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <!-- Scripts -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/crypto-js/4.1.1/crypto-js.min.js"></script>
+    <script src="../script.js"></script>
+    <script>
+        // Secure authentication using hashed passwords
+        // To generate a new hash: CryptoJS.SHA256('yourpassword').toString()
+        const VALID_USERNAME = 'admin';
+        const VALID_PASSWORD_HASH = '21bffca435f401251eb90e7994fa3ded96aa568bc4f66571700fbf26ce57da53'; // Hash of 'admin123'
+        const SESSION_TIMEOUT = 24 * 60 * 60 * 1000; // 24 hours in milliseconds
+
+        document.getElementById('loginForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+
+            const username = document.getElementById('username').value.trim();
+            const password = document.getElementById('password').value;
+            const errorDiv = document.getElementById('loginError');
+
+            // Hash the entered password
+            const enteredPasswordHash = CryptoJS.SHA256(password).toString();
+
+            if (username === VALID_USERNAME && enteredPasswordHash === VALID_PASSWORD_HASH) {
+                // Set auth token with timestamp
+                localStorage.setItem('portfolio-auth', 'true');
+                localStorage.setItem('portfolio-auth-time', Date.now().toString());
+                localStorage.setItem('portfolio-user', username);
+
+                // Clear form
+                document.getElementById('loginForm').reset();
+
+                // Redirect to main portfolio
+                window.location.href = '../';
+            } else {
+                errorDiv.textContent = 'Invalid username or password';
+                errorDiv.style.display = 'block';
+
+                // Clear password field
+                document.getElementById('password').value = '';
+            }
+        });
+
+        // Check if already logged in and session not expired
+        const authTime = localStorage.getItem('portfolio-auth-time');
+        if (localStorage.getItem('portfolio-auth') === 'true' && authTime) {
+            const timeDiff = Date.now() - parseInt(authTime);
+            if (timeDiff < SESSION_TIMEOUT) {
+                window.location.href = '../';
+            } else {
+                // Session expired, clear auth
+                localStorage.removeItem('portfolio-auth');
+                localStorage.removeItem('portfolio-auth-time');
+                localStorage.removeItem('portfolio-user');
+            }
+        }
+    </script>
+
+</body>
+</html></content>
+<parameter name="filePath">login/index.html

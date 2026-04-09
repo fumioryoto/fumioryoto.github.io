@@ -1,46 +1,21 @@
 <!DOCTYPE html>
-<html lang="en">
-
-  <head>
-    <meta charset="UTF-8">
-    <title>Portfolio - Md Nahidul Islam &amp; Interactive CV</title>
-    <link rel="stylesheet" href="/style.css">
-
-  </head>
-    
-  <body>
-  <html lang="en" dir="ltr">
+<html lang="en" dir="ltr">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, user-scalable=yes">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="description" content="Md. Nahidul Islam - Cybersecurity portfolio, pentesting and bug bounty hunting with an interactive work dashboard.">
+    <meta property="og:title" content="Md. Nahidul Islam | Cybersecurity Portfolio">
+    <meta property="og:description" content="Freelance penetration tester and bug bounty hunter. Explore skills, experience, and published work updates.">
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://fumioryoto.github.io/">
+    <meta property="og:image" content="image.png">
     <title>Portfolio - Md Nahidul Islam</title>
-    
-    <!-- Tailwind CSS (CDN for development only) -->
-    <script>
-        // Suppress Tailwind CDN warning
-        if (typeof console !== 'undefined' && console.warn) {
-            const originalWarn = console.warn;
-            console.warn = function(...args) {
-                if (args[0] && typeof args[0] === 'string' && args[0].includes('tailwindcss.com')) {
-                    return; // Suppress Tailwind CDN warning
-                }
-                originalWarn.apply(console, args);
-            };
-        }
-    </script>
-    <script src="https://cdn.tailwindcss.com"></script>
-    
-    <!-- Font Awesome -->
+    <link rel="stylesheet" href="style.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    
-    <!-- Google Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@300;400;500;700;800;900&family=Fira+Code:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-    
-    <!-- Custom CSS -->
-    <link rel="stylesheet" href="style.css">
 </head>
 <body class="body-main" data-theme="dark" data-lang="en" data-dir="ltr">
     
@@ -93,6 +68,10 @@
                 <a href="#projects" class="nav-link" data-section="projects">
                     <i class="fas fa-rocket"></i>
                     <span class="nav-text" data-text-en="Projects" >Projects</span>
+                </a>
+                <a href="#dashboard" class="nav-link" id="dashboardNavLink" data-section="dashboard" style="display: none;">
+                    <i class="fas fa-tachometer-alt"></i>
+                    <span class="nav-text" data-text-en="Dashboard" >Dashboard</span>
                 </a>
                 <a href="#contact" class="nav-link" data-section="contact">
                     <i class="fas fa-envelope"></i>
@@ -153,9 +132,9 @@
                             <span data-text-en="Get In Touch" >Get In Touch</span>
                             <i class="fas fa-arrow-right"></i>
                         </a>
-                        <a href="#projects" class="btn btn-secondary">
-                            <span data-text-en="View Projects" >View Projects</span>
-                            <i class="fas fa-code"></i>
+                        <a href="#dashboard" class="btn btn-secondary" id="workDashboardBtn" style="display: none;">
+                            <span data-text-en="Work Dashboard" >Work Dashboard</span>
+                            <i class="fas fa-tachometer-alt"></i>
                         </a>
                     </div>
                     
@@ -271,51 +250,74 @@ I am particularly interested in ethical hacking, vulnerability research, and sec
                     
                     <div class="about-image-wrapper">
                         <div class="about-image-container">
+                            <div class="code-block-header">
+                                <div class="code-window-controls">
+                                    <span class="window-control red"></span>
+                                    <span class="window-control yellow"></span>
+                                    <span class="window-control green"></span>
+                                </div>
+                            </div>
                             <div class="code-block">
                                 <div class="code-line">
-                                    <span class="code-keyword">Pentester</span>
-                                    <span class="code-variable">Developer</span>
+                                    <span class="code-keyword">const</span>
+                                    <span class="code-variable">portfolio</span>
                                     <span class="code-operator">=</span>
                                     <span class="code-brace">{</span>
                                 </div>
                                 <div class="code-line indent">
                                     <span class="code-property">name</span>
                                     <span class="code-operator">:</span>
-                                    <span class="code-string">'Nahidul Islam'</span>
+                                    <span class="code-string">'Md. Nahidul Islam'</span>
+                                    <span class="code-comma">,</span>
+                                </div>
+                                <div class="code-line indent">
+                                    <span class="code-property">title</span>
+                                    <span class="code-operator">:</span>
+                                    <span class="code-string">'Pentester & Developer'</span>
                                     <span class="code-comma">,</span>
                                 </div>
                                 <div class="code-line indent">
                                     <span class="code-property">skills</span>
                                     <span class="code-operator">:</span>
                                     <span class="code-bracket">[</span>
+                                </div>
+                                <div class="code-line indent-2">
                                     <span class="code-string">'React'</span>
                                     <span class="code-comma">,</span>
                                     <span class="code-string">'Node.js'</span>
                                     <span class="code-comma">,</span>
                                     <span class="code-string">'TypeScript'</span>
                                     <span class="code-comma">,</span>
+                                </div>
+                                <div class="code-line indent-2">
                                     <span class="code-string">'WordPress'</span>
                                     <span class="code-comma">,</span>
                                     <span class="code-string">'Python'</span>
                                     <span class="code-comma">,</span>
-                                    <span class="code-string">'bash'</span>
+                                    <span class="code-string">'Bash'</span>
                                     <span class="code-comma">,</span>
-                                    <span class="code-string">'shell'</span>
-                                    <span class="code-comma">,</span>
+                                </div>
+                                <div class="code-line indent-2">
                                     <span class="code-string">'Docker'</span>
                                     <span class="code-comma">,</span>
                                     <span class="code-string">'Linux'</span>
+                                    <span class="code-comma">,</span>
+                                    <span class="code-string">'Security'</span>
+                                </div>
+                                <div class="code-line indent">
                                     <span class="code-bracket">]</span>
                                     <span class="code-comma">,</span>
                                 </div>
                                 <div class="code-line indent">
                                     <span class="code-property">passion</span>
                                     <span class="code-operator">:</span>
+                                    <span class="code-bracket">[</span>
                                     <span class="code-string">'Coding'</span>
                                     <span class="code-comma">,</span>
                                     <span class="code-string">'Pentesting'</span>
                                     <span class="code-comma">,</span>
-                                    <span class="code-string">'Offensive-Security'</span>
+                                    <span class="code-string">'Offensive Security'</span>
+                                    <span class="code-bracket">]</span>
                                 </div>
                                 <div class="code-line">
                                     <span class="code-brace">}</span>
@@ -595,119 +597,11 @@ I am particularly interested in ethical hacking, vulnerability research, and sec
                 </div>
                 
                 <div class="timeline">
-                    <div class="timeline-item">
-                        <div class="timeline-marker"></div>
-                        <div class="timeline-content">
-                            <div class="timeline-header">
-                                <div class="timeline-year">2025 - Present</div>
-                                <div class="timeline-badge">Current</div>
-                            </div>
-                            <h3 class="timeline-title" data-text-en="Penetration Tester & Bug Bounty Hunter" >Penetration Tester & Bug Bounty Hunter</h3>
-                            <div class="timeline-company">
-                                <i class="fas fa-building"></i>
-                                at Hackerone, Bugcrowd and Fiverr.
-                            </div>
-                            <p class="timeline-description" data-text-en="Working as a freelance penetration tester specializing in web application security, network security, and vulnerability assessments. Conducting security audits and providing detailed reports to clients." >
-                                Working as a freelance penetration tester specializing in web application security, network security, and vulnerability assessments. Conducting security audits and providing detailed reports to clients.
-                            </p>
-                            <div class="timeline-achievements">
-                                <div class="achievement-item">
-                                    <i class="fas fa-check-circle"></i>
-                                    <span data-text-en="Led team of 4 Pentesters" >Led team of 3 Pentesters</span>
-                                </div>
-                                <div class="achievement-item">
-                                    <i class="fas fa-check-circle"></i>
-                                    <span data-text-en="Improved performance by 40%" >Improved performance by 15%</span>
-                                </div>
-                                <div class="achievement-item">
-                                    <i class="fas fa-check-circle"></i>
-                                    <span data-text-en="Able to research and analyze vulnerabilities of 35+ and Mitigate advance CVE's" >Able to research and analyze vulnerabilities of 35+ and Mitigate advance CVE's</span>
-                                </div>
-                            </div>
-                            <div class="timeline-tags">
-                                <span class="tag">SOC</span>
-                                <span class="tag">Offensive Security</span>
-                                <span class="tag">Recon</span>
-                                <span class="tag">Automation</span>
-                                <span class="tag">Docker</span>
-                                <span class="tag">AWS</span>
-                                <span class="tag">CVE Analysis</span>
-                                <span class="tag">Bug Bounty</span>
-                                <span class="tag">Penetration Testing</span>
-                            </div>
-                        </div>
-                    </div>
-                    
-                    <div class="timeline-item">
-                        <div class="timeline-marker"></div>
-                        <div class="timeline-content">
-                            <div class="timeline-header">
-                                <div class="timeline-year">2020 - 2022</div>
-                            </div>
-                            <h3 class="timeline-title" data-text-en="Junior Security Analyst" >Junior Security Analyst</h3>
-                            <div class="timeline-company">
-                                <i class="fas fa-building"></i>
-                                Open source Community
-                            </div>
-                            <p class="timeline-description" data-text-en="Developed interactive user interfaces using React and Vue.js. Worked on improving user experience and performance optimization. Collaborated with designers to implement pixel-perfect designs.">
-                                Developed interactive user interfaces using React and Vue.js. Worked on improving user experience and performance optimization. Collaborated with designers to implement pixel-perfect designs.
-                            </p>
-                            <div class="timeline-achievements">
-                                <div class="achievement-item">
-                                    <i class="fas fa-check-circle"></i>
-                                    <span data-text-en="Learned most of the security concepts" >Learned most of the security concepts</span>
-                                </div>
-                                <div class="achievement-item">
-                                    <i class="fas fa-check-circle"></i>
-                                    <span data-text-en="Contributed to 10+ open source projects" >Contributed to 10+ open source projects</span>
-                                </div>
-                            </div>
-                            <div class="timeline-tags">
-                                <span class="tag">SQLi</span>
-                                <span class="tag">XSS</span>
-                                <span class="tag">CSRF</span>
-                                <span class="tag">SSRF</span>
-                                <span class="tag">WebShell</span>
-                                <span class="tag">Burpsuite</span>
-                                <span class="tag">Malware</span>
-                            </div>
-                        </div>
-                    </div>
-                    
-                    <div class="timeline-item">
-                        <div class="timeline-marker"></div>
-                        <div class="timeline-content">
-                            <div class="timeline-header">
-                                <div class="timeline-year">2018 - 2020</div>
-                            </div>
-                            <h3 class="timeline-title" data-text-en="Junior Developer">Junior Developer</h3>
-                            <div class="timeline-company">
-                                <i class="fas fa-building"></i>
-                                Free Code Camp Community
-                            </div>
-                            <p class="timeline-description" data-text-en="Developed websites using HTML, CSS, and JavaScript. Learned best practices in web development. Worked on various client projects and gained experience in modern web technologies.">
-                                Developed websites using HTML, CSS, and JavaScript. Learned best practices in web development. Worked on various client projects and gained experience in modern web technologies.
-                            </p>
-                            <div class="timeline-achievements">
-                                <div class="achievement-item">
-                                    <i class="fas fa-check-circle"></i>
-                                    <span data-text-en="Completed 30+ projects">Completed 30+ projects</span>
-                                </div>
-                                <div class="achievement-item">
-                                    <i class="fas fa-check-circle"></i>
-                                    <span data-text-en="Learned modern frameworks">Learned modern frameworks</span>
-                                </div>
-                            </div>
-                            <div class="timeline-tags">
-                                <span class="tag">HTML</span>
-                                <span class="tag">CSS</span>
-                                <span class="tag">JavaScript</span>
-                                <span class="tag">jQuery</span>
-                                <span class="tag">Bootstrap</span>
-                            </div>
-                        </div>
-                    </div>
+                    <!-- Dynamic experiences from dashboard will be added here -->
                 </div>
+
+                <!-- Dashboard Experiences Container -->
+                <div id="dashboardExperiences" class="timeline"></div>
             </div>
         </section>
 
@@ -724,99 +618,128 @@ I am particularly interested in ethical hacking, vulnerability research, and sec
                     <div class="section-line"></div>
                 </div>
                 
-                <div class="projects-grid">
-                    <div class="project-card">
-                        <div class="project-image">
-                            <div class="project-overlay">
-                                <div class="project-links">
-                                    <a href="#" class="project-link" title="View Project">
-                                        <i class="fas fa-external-link-alt"></i>
-                                    </a>
-                                    <a href="#" class="project-link" title="View Code">
-                                        <i class="fab fa-github"></i>
-                                    </a>
-                                </div>
-                            </div>
-                            <div class="project-placeholder">
-                                <i class="fas fa-globe"></i>
-                            </div>
-                        </div>
-                        <div class="project-content">
-                            <h3 class="project-title" data-text-en="OSINT">OSINT</h3>
-                            <p class="project-description" data-text-en="A complete Recon, Data Mining, Profiling with proper integration and advanced information gathering.">
-                                A complete Recon, Data Mining, Profiling with proper integration and advanced information gathering.
-                            </p>
-                            <div class="project-tags">
-                                <span class="tag">Recon</span>
-                                <span class="tag">Open source</span>
-                                <span class="tag">Leaked database</span>
-                            </div>
-                        </div>
-                    </div>
-                    
-                    <div class="project-card">
-                        <div class="project-image">
-                            <div class="project-overlay">
-                                <div class="project-links">
-                                    <a href="#" class="project-link" title="View Project">
-                                        <i class="fas fa-external-link-alt"></i>
-                                    </a>
-                                    <a href="#" class="project-link" title="View Code">
-                                        <i class="fab fa-github"></i>
-                                    </a>
-                                </div>
-                            </div>
-                            <div class="project-placeholder">
-                                <i class="fas fa-shield-virus"></i>
-                            </div>
-                        </div>
-                        <div class="project-content">
-                            <h3 class="project-title" data-text-en="VAPT">VAPT</h3>
-                            <p class="project-description" data-text-en="Checking systems for security flaws and safely testing how they can be attacked.">
-                                Checking systems for security flaws and safely testing how they can be attacked.
-                            </p>
-                            <div class="project-tags">
-                                <span class="tag">Vulnerability Scan</span>
-                                <span class="tag">CVE Analysis</span>
-                                <span class="tag">Exploit Writing</span>
-                                <span class="tag">Exploitation</span>
-                                <span class="tag">Reporting</span>
-                            </div>
-                        </div>
-                    </div>
-                    
-                    <div class="project-card">
-                        <div class="project-image">
-                            <div class="project-overlay">
-                                <div class="project-links">
-                                    <a href="#" class="project-link" title="View Project">
-                                        <i class="fas fa-external-link-alt"></i>
-                                    </a>
-                                    <a href="#" class="project-link" title="View Code">
-                                        <i class="fab fa-github"></i>
-                                    </a>
-                                </div>
-                            </div>
-                            <div class="project-placeholder">
-                                <i class="fab fa-wordpress"></i>
-                            </div>
-                        </div>
-                        <div class="project-content">
-                            <h3 class="project-title" data-text-en="WordPress Malware Removal">WordPress Malware Removal</h3>
-                            <p class="project-description" data-text-en="Detecting and removing malware from compromised WordPress sites.">
-                                Detecting and removing malware from compromised WordPress sites.
-                            </p>
-                            <div class="project-tags">
-                                <span class="tag">Cleanup</span>
-                                <span class="tag">Hardening</span>
-                                <span class="tag">Recovery</span>
-                            </div>
-                        </div>
-                    </div>
+                <div class="projects-carousel-container">
+                    <button class="carousel-btn carousel-prev" id="projectsPrev" title="Previous">
+                        <i class="fas fa-chevron-left"></i>
+                    </button>
+                    <div id="dashboardPosts" class="projects-carousel"></div>
+                    <button class="carousel-btn carousel-next" id="projectsNext" title="Next">
+                        <i class="fas fa-chevron-right"></i>
+                    </button>
                 </div>
             </div>
         </section>
+          <!-- Dashboard Section -->
+          <section id="dashboard" class="section dashboard-section">
+              <div class="section-container">
+                  <div class="section-header dashboard-section-header">
+                      <div class="dashboard-header-content">
+                          <span class="section-number">~</span>
+                          <h2 class="section-title">
+                              <span class="title-bracket">&lt;</span>
+                              <span class="title-text" data-text-en="Dashboard">Dashboard</span>
+                              <span class="title-bracket">&gt;</span>
+                          </h2>
+                          <div class="section-line"></div>
+                      </div>
+                      <button id="logoutBtn" class="btn btn-secondary" title="Logout">
+                          <i class="fas fa-sign-out-alt"></i>
+                          <span data-text-en="Logout">Logout</span>
+                      </button>
+                  </div>
 
+                  <div class="dashboard-panel">
+                      <div class="dashboard-tabs">
+                          <button class="dashboard-tab active" data-tab="projects">Projects</button>
+                          <button class="dashboard-tab" data-tab="experience">Experience</button>
+                      </div>
+
+                      <!-- Projects Panel -->
+                      <div class="dashboard-tab-content active" data-tab="projects">
+                          <div class="dashboard-form-panel">
+                              <h3 class="dashboard-title" data-text-en="Publish Work">Publish Work</h3>
+                              <p class="dashboard-description" data-text-en="Share your work updates and success stories. Saved entries appear in the Projects section automatically.">Share your work updates and success stories. Saved entries appear in the Projects section automatically.</p>
+                              <form id="dashboardForm" class="dashboard-form">
+                                  <input type="hidden" name="dashboardIndex" id="dashboardIndex" value="">
+                                  <div class="form-group">
+                                      <input type="text" id="dashboardTitle" name="dashboardTitle" class="form-input" placeholder="Work title" required>
+                                  </div>
+                                  <div class="form-group">
+                                      <textarea id="dashboardDescription" name="dashboardDescription" class="form-input form-textarea" rows="4" placeholder="Describe the work or result" required></textarea>
+                                  </div>
+                                  <div class="form-group">
+                                      <input type="text" id="dashboardTags" name="dashboardTags" class="form-input" placeholder="Tags (comma separated)">
+                                  </div>
+                                  <div class="form-group">
+                                      <input type="url" id="dashboardLink" name="dashboardLink" class="form-input" placeholder="Project link (optional)">
+                                  </div>
+                                  <div class="form-group">
+                                      <input type="url" id="dashboardImage" name="dashboardImage" class="form-input" placeholder="Thumbnail image URL (optional)" title="Paste an image hosting link here (e.g., imgur, imgur.com, etc.)">
+                                  </div>
+                                  <div class="dashboard-form-actions">
+                                      <button type="submit" class="btn btn-primary" data-text-en="Save Work">Save Work</button>
+                                      <button type="button" class="btn btn-secondary" id="dashboardReset" data-text-en="Reset">Reset</button>
+                                  </div>
+                              </form>
+                          </div>
+                          <div class="dashboard-list-panel">
+                              <h3 class="dashboard-title" data-text-en="Published Work">Published Work</h3>
+                              <p class="dashboard-description" data-text-en="Saved work posts appear here and in the Projects section above.">Saved work posts appear here and in the Projects section above.</p>
+                              <div id="dashboardList" class="dashboard-list"></div>
+                          </div>
+                      </div>
+
+                      <!-- Experience Panel -->
+                      <div class="dashboard-tab-content" data-tab="experience">
+                          <div class="dashboard-form-panel">
+                              <h3 class="dashboard-title" data-text-en="Add Experience">Add Experience</h3>
+                              <p class="dashboard-description" data-text-en="Add your professional experience and achievements. Entries appear in the Experience section automatically.">Add your professional experience and achievements. Entries appear in the Experience section automatically.</p>
+                              <form id="experienceForm" class="dashboard-form">
+                                  <input type="hidden" name="experienceIndex" id="experienceIndex" value="">
+                                  <div class="form-row">
+                                      <div class="form-group">
+                                          <input type="text" name="experienceTitle" class="form-input" placeholder="Job title" required>
+                                      </div>
+                                      <div class="form-group">
+                                          <input type="text" name="experienceCompany" class="form-input" placeholder="Company/Organization" required>
+                                      </div>
+                                  </div>
+                                  <div class="form-row">
+                                      <div class="form-group">
+                                          <input type="text" name="experiencePeriod" class="form-input" placeholder="Period (e.g., 2023 - Present)" required>
+                                      </div>
+                                      <div class="form-group">
+                                          <input type="text" name="experienceLocation" class="form-input" placeholder="Location (optional)">
+                                      </div>
+                                  </div>
+                                  <div class="form-group">
+                                      <textarea name="experienceDescription" class="form-input form-textarea" rows="3" placeholder="Job description and responsibilities" required></textarea>
+                                  </div>
+                                  <div class="form-group">
+                                      <textarea name="experienceAchievements" class="form-input form-textarea" rows="3" placeholder="Key achievements (one per line)" required></textarea>
+                                  </div>
+                                  <div class="form-group">
+                                      <input type="text" name="experienceTags" class="form-input" placeholder="Skills/Tags (comma separated)" required>
+                                  </div>
+                                  <div class="checkbox-group">
+                                      <input type="checkbox" id="experienceIsCurrent" name="experienceIsCurrent" class="form-checkbox">
+                                      <label for="experienceIsCurrent" class="checkbox-label">Mark as Current Experience</label>
+                                  </div>
+                                  <div class="dashboard-form-actions">
+                                      <button type="submit" class="btn btn-primary" data-text-en="Save Experience">Save Experience</button>
+                                      <button type="button" class="btn btn-secondary" id="experienceReset" data-text-en="Reset">Reset</button>
+                                  </div>
+                              </form>
+                          </div>
+                          <div class="dashboard-list-panel">
+                              <h3 class="dashboard-title" data-text-en="Added Experience">Added Experience</h3>
+                              <p class="dashboard-description" data-text-en="Saved experience entries appear here and in the Experience section above.">Saved experience entries appear here and in the Experience section above.</p>
+                              <div id="experienceList" class="dashboard-list"></div>
+                          </div>
+                      </div>
+                  </div>
+              </div>
+          </section>
         <!-- Contact Section -->
         <section id="contact" class="section contact-section">
             <div class="section-container">
@@ -933,16 +856,7 @@ I am particularly interested in ethical hacking, vulnerability research, and sec
 
     <!-- Scripts -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js"></script>
-    <!-- Motion One loaded dynamically -->
-    <script src="js/animations.js"></script>
-    <script src="js/main.js"></script>
+    <script src="script.js"></script>
 </body>
 </html>
-    <script  src="./script.js"></script>
-
-  </body>
-  
-</html>
-
-
 

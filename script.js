@@ -17,6 +17,11 @@ function initializeApp() {
     initNavigation();
     initScrollEffects();
     initFormHandlers();
+    checkAuth();
+    initDashboard();
+    initExperienceDashboard();
+    initDashboardTabs();
+    initProjectCarousel();
     initMobileMenu();
     updateLanguageUI();
     updateThemeUI();
@@ -247,9 +252,452 @@ function handleFormSubmit(e) {
     e.target.reset();
 }
 
-// Run when DOM is ready
-document.addEventListener("DOMContentLoaded", initFormHandlers);
+function checkAuth() {
+    const SESSION_TIMEOUT = 24 * 60 * 60 * 1000; // 24 hours
+    const isAuthenticated = localStorage.getItem('portfolio-auth') === 'true';
+    const authTime = localStorage.getItem('portfolio-auth-time');
+    const dashboardSection = document.getElementById('dashboard');
 
+    // Check if session is expired
+    if (isAuthenticated && authTime) {
+        const timeDiff = Date.now() - parseInt(authTime);
+        if (timeDiff >= SESSION_TIMEOUT) {
+            // Session expired, clear auth
+            localStorage.removeItem('portfolio-auth');
+            localStorage.removeItem('portfolio-auth-time');
+            window.location.reload();
+            return;
+        }
+    }
+
+    if (!isAuthenticated) {
+        // Hide dashboard section if not authenticated
+        if (dashboardSection) {
+            dashboardSection.style.display = 'none';
+        }
+        // Hide dashboard navigation link
+        const dashboardNavLink = document.getElementById('dashboardNavLink');
+        if (dashboardNavLink) {
+            dashboardNavLink.style.display = 'none';
+        }
+        // Hide dashboard CTA button
+        const workDashboardBtn = document.getElementById('workDashboardBtn');
+        if (workDashboardBtn) {
+            workDashboardBtn.style.display = 'none';
+        }
+    } else {
+        // Show dashboard if authenticated
+        if (dashboardSection) {
+            dashboardSection.style.display = 'block';
+        }
+        // Show dashboard navigation link
+        const dashboardNavLink = document.getElementById('dashboardNavLink');
+        if (dashboardNavLink) {
+            dashboardNavLink.style.display = '';
+        }
+        // Show dashboard CTA button
+        const workDashboardBtn = document.getElementById('workDashboardBtn');
+        if (workDashboardBtn) {
+            workDashboardBtn.style.display = '';
+        }
+        // Initialize logout functionality
+        const logoutBtn = document.getElementById('logoutBtn');
+        if (logoutBtn) {
+            logoutBtn.addEventListener('click', () => {
+                localStorage.removeItem('portfolio-auth');
+                localStorage.removeItem('portfolio-auth-time');
+                localStorage.removeItem('portfolio-user');
+                window.location.reload();
+            });
+        }
+    }
+}
+
+function initDashboard() {
+    const dashboardPosts = document.getElementById('dashboardPosts');
+
+    // Always load and render posts to projects section
+    if (dashboardPosts) {
+        const savedPosts = loadDashboardPosts();
+        renderDashboardPosts(savedPosts, document.getElementById('dashboardList'), dashboardPosts);
+    }
+
+    const isAuthenticated = localStorage.getItem('portfolio-auth') === 'true';
+    if (!isAuthenticated) return;
+
+    // Only initialize form handlers if authenticated
+    const dashboardForm = document.getElementById('dashboardForm');
+    const dashboardReset = document.getElementById('dashboardReset');
+    const dashboardList = document.getElementById('dashboardList');
+
+    if (!dashboardForm || !dashboardReset || !dashboardList) return;
+
+    dashboardForm.addEventListener('submit', (event) => {
+        event.preventDefault();
+        const formData = new FormData(dashboardForm);
+        const post = {
+            title: formData.get('dashboardTitle')?.toString() || '',
+            description: formData.get('dashboardDescription')?.toString() || '',
+            tags: formData.get('dashboardTags')?.toString() || '',
+            link: formData.get('dashboardLink')?.toString() || '',
+            image: formData.get('dashboardImage')?.toString() || '',
+            createdAt: new Date().toISOString(),
+            id: formData.get('dashboardIndex')?.toString() || Date.now().toString()
+        };
+
+        const posts = saveDashboardPost(post);
+        renderDashboardPosts(posts, dashboardList, dashboardPosts);
+        dashboardForm.reset();
+        document.getElementById('dashboardIndex').value = '';
+    });
+
+    dashboardReset.addEventListener('click', () => {
+        dashboardForm.reset();
+        document.getElementById('dashboardIndex').value = '';
+    });
+}
+
+function saveDashboardPost(post) {
+    const posts = loadDashboardPosts();
+    const existingIndex = posts.findIndex((item) => item.id === post.id);
+
+    if (existingIndex >= 0) {
+        posts[existingIndex] = post;
+    } else {
+        posts.unshift(post);
+    }
+
+    localStorage.setItem('portfolio-dashboard-posts', JSON.stringify(posts));
+    return posts;
+}
+
+function loadDashboardPosts() {
+    const rawPosts = localStorage.getItem('portfolio-dashboard-posts');
+    if (!rawPosts) return [];
+
+    try {
+        return JSON.parse(rawPosts);
+    } catch (error) {
+        console.warn('Unable to parse dashboard posts:', error);
+        return [];
+    }
+}
+
+function renderDashboardPosts(posts, dashboardList, dashboardPosts) {
+    const isAuthenticated = localStorage.getItem('portfolio-auth') === 'true';
+
+    // Always render to projects section
+    dashboardPosts.innerHTML = '';
+
+    if (posts.length === 0) {
+        if (isAuthenticated) {
+            dashboardList.innerHTML = '<p class="empty-message">No work posts yet. Add one using the dashboard form.</p>';
+        }
+        return;
+    }
+
+    posts.forEach((post) => {
+        // Only render dashboard list if authenticated
+        if (isAuthenticated) {
+            const card = document.createElement('div');
+            card.className = 'dashboard-card';
+            card.innerHTML = `
+                <div class="dashboard-card-content">
+                    <div class="dashboard-card-header">
+                        <h4>${escapeHtml(post.title)}</h4>
+                        <span>${new Date(post.createdAt).toLocaleDateString()}</span>
+                    </div>
+                    <p>${escapeHtml(post.description)}</p>
+                    <div class="dashboard-card-tags">${renderTags(post.tags)}</div>
+                    ${post.link ? `<a href="${escapeAttribute(post.link)}" target="_blank" rel="noopener" class="dashboard-card-link">View link</a>` : ''}
+                </div>
+                <div class="dashboard-card-actions">
+                    <button class="btn btn-secondary dashboard-edit" data-id="${post.id}">Edit</button>
+                    <button class="btn btn-secondary dashboard-delete" data-id="${post.id}">Delete</button>
+                </div>
+            `;
+            dashboardList.appendChild(card);
+        }
+
+        // Always render to projects section
+        const projectCard = document.createElement('div');
+        projectCard.className = 'project-card';
+        const imageHTML = post.image 
+            ? `<div class="project-image"><img src="${escapeAttribute(post.image)}" alt="${escapeHtml(post.title)}" class="project-thumbnail" onerror="this.style.display='none'; this.parentElement.innerHTML += '<div class=\\'project-placeholder\\'><i class=\\'fas fa-image\\'></i></div>'"></div>`
+            : `<div class="project-image"><div class="project-placeholder"><i class="fas fa-file-alt"></i></div></div>`;
+        projectCard.innerHTML = `
+            ${imageHTML}
+            <div class="project-content">
+                <h3 class="project-title">${escapeHtml(post.title)}</h3>
+                <p class="project-description">${escapeHtml(post.description)}</p>
+                <div class="project-tags">${renderTags(post.tags)}</div>
+                ${post.link ? `<a href="${escapeAttribute(post.link)}" target="_blank" rel="noopener" class="project-link project-link-inline">View Work</a>` : ''}
+            </div>
+        `;
+
+        dashboardPosts.appendChild(projectCard);
+    });
+
+    // Only add event listeners if authenticated
+    if (isAuthenticated) {
+        dashboardList.querySelectorAll('.dashboard-edit').forEach((button) => {
+            button.addEventListener('click', () => {
+                const postId = button.getAttribute('data-id');
+                const posts = loadDashboardPosts();
+                const post = posts.find((item) => item.id === postId);
+                if (!post) return;
+                document.getElementById('dashboardTitle').value = post.title;
+                document.getElementById('dashboardDescription').value = post.description;
+                document.getElementById('dashboardTags').value = post.tags;
+                document.getElementById('dashboardLink').value = post.link;
+                document.getElementById('dashboardImage').value = post.image || '';
+                document.getElementById('dashboardIndex').value = post.id;
+            });
+        });
+
+        dashboardList.querySelectorAll('.dashboard-delete').forEach((button) => {
+            button.addEventListener('click', () => {
+                const postId = button.getAttribute('data-id');
+                const posts = loadDashboardPosts().filter((item) => item.id !== postId);
+                localStorage.setItem('portfolio-dashboard-posts', JSON.stringify(posts));
+                renderDashboardPosts(posts, dashboardList, dashboardPosts);
+            });
+        });
+    }
+}
+
+function initExperienceDashboard() {
+    const isAuthenticated = localStorage.getItem('portfolio-auth') === 'true';
+    if (!isAuthenticated) return;
+
+    const experienceForm = document.getElementById('experienceForm');
+    const experienceReset = document.getElementById('experienceReset');
+    const experienceList = document.getElementById('experienceList');
+    const dashboardExperiences = document.getElementById('dashboardExperiences');
+
+    if (!experienceForm || !experienceList || !dashboardExperiences) return;
+
+    // Always load and render experiences
+    const savedExperiences = loadExperiencePosts();
+    renderExperiencePosts(savedExperiences, experienceList, dashboardExperiences);
+
+    experienceForm.addEventListener('submit', (event) => {
+        event.preventDefault();
+        const formData = new FormData(experienceForm);
+        const isCurrent = formData.get('experienceIsCurrent') === 'on';
+        const experience = {
+            title: formData.get('experienceTitle')?.toString() || '',
+            company: formData.get('experienceCompany')?.toString() || '',
+            period: formData.get('experiencePeriod')?.toString() || '',
+            location: formData.get('experienceLocation')?.toString() || '',
+            description: formData.get('experienceDescription')?.toString() || '',
+            achievements: formData.get('experienceAchievements')?.toString() || '',
+            tags: formData.get('experienceTags')?.toString() || '',
+            isCurrent: isCurrent,
+            createdAt: new Date().toISOString(),
+            id: formData.get('experienceIndex')?.toString() || Date.now().toString()
+        };
+
+        const experiences = saveExperiencePost(experience);
+        renderExperiencePosts(experiences, experienceList, dashboardExperiences);
+        experienceForm.reset();
+        document.getElementById('experienceIndex').value = '';
+    });
+
+    experienceReset.addEventListener('click', () => {
+        experienceForm.reset();
+        document.getElementById('experienceIndex').value = '';
+    });
+}
+
+function saveExperiencePost(experience) {
+    const experiences = loadExperiencePosts();
+    
+    // If marking as current, unmark all others
+    if (experience.isCurrent) {
+        experiences.forEach(exp => {
+            exp.isCurrent = false;
+        });
+    }
+    
+    const existingIndex = experiences.findIndex((item) => item.id === experience.id);
+
+    if (existingIndex >= 0) {
+        experiences[existingIndex] = experience;
+    } else {
+        experiences.unshift(experience);
+    }
+
+    localStorage.setItem('portfolio-experience-posts', JSON.stringify(experiences));
+    return experiences;
+}
+
+function loadExperiencePosts() {
+    const experiences = localStorage.getItem('portfolio-experience-posts');
+    return experiences ? JSON.parse(experiences) : [];
+}
+
+function renderExperiencePosts(experiences, experienceList, dashboardExperiences) {
+    const isAuthenticated = localStorage.getItem('portfolio-auth') === 'true';
+
+    // Always render to experience section
+    dashboardExperiences.innerHTML = '';
+
+    if (experiences.length === 0) {
+        if (isAuthenticated) {
+            experienceList.innerHTML = '<p class="empty-message">No experience entries yet. Add one using the experience form.</p>';
+        }
+        return;
+    }
+
+    // Sort experiences: current first, then by creation date
+    const sortedExperiences = [...experiences].sort((a, b) => {
+        if (a.isCurrent && !b.isCurrent) return -1;
+        if (!a.isCurrent && b.isCurrent) return 1;
+        return new Date(b.createdAt) - new Date(a.createdAt);
+    });
+
+    sortedExperiences.forEach((experience) => {
+        // Only render dashboard list if authenticated
+        if (isAuthenticated) {
+            const card = document.createElement('div');
+            card.className = 'dashboard-card';
+            const currentBadge = experience.isCurrent ? '<span class="current-badge">Current</span>' : '';
+            card.innerHTML = `
+                <div class="dashboard-card-content">
+                    <div class="dashboard-card-header">
+                        <h4>${escapeHtml(experience.title)}${currentBadge}</h4>
+                        <span>${escapeHtml(experience.company)} • ${escapeHtml(experience.period)}</span>
+                    </div>
+                    <p>${escapeHtml(experience.description)}</p>
+                    <div class="dashboard-card-tags">${renderTags(experience.tags)}</div>
+                </div>
+                <div class="dashboard-card-actions">
+                    <button class="btn btn-secondary experience-edit" data-id="${experience.id}">Edit</button>
+                    <button class="btn btn-secondary experience-delete" data-id="${experience.id}">Delete</button>
+                </div>
+            `;
+            experienceList.appendChild(card);
+        }
+
+        // Always render to experience section
+        const timelineItem = document.createElement('div');
+        timelineItem.className = 'timeline-item';
+        const currentBadgeHTML = experience.isCurrent ? '<div class="timeline-badge">Current</div>' : '';
+        timelineItem.innerHTML = `
+            <div class="timeline-marker"></div>
+            <div class="timeline-content">
+                <div class="timeline-header">
+                    <div class="timeline-year">${escapeHtml(experience.period)}</div>
+                    ${currentBadgeHTML}
+                </div>
+                <h3 class="timeline-title">${escapeHtml(experience.title)}</h3>
+                <div class="timeline-company">
+                    <i class="fas fa-building"></i>
+                    ${escapeHtml(experience.company)}${experience.location ? ` - ${escapeHtml(experience.location)}` : ''}
+                </div>
+                <p class="timeline-description">${escapeHtml(experience.description)}</p>
+                <div class="timeline-achievements">
+                    ${experience.achievements.split('\n').filter(a => a.trim()).map(achievement =>
+                        `<div class="achievement-item">
+                            <i class="fas fa-check-circle"></i>
+                            <span>${escapeHtml(achievement.trim())}</span>
+                        </div>`
+                    ).join('')}
+                </div>
+                <div class="timeline-tags">
+                    ${experience.tags.split(',').map(tag =>
+                        `<span class="tag">${escapeHtml(tag.trim())}</span>`
+                    ).join('')}
+                </div>
+            </div>
+        `;
+
+        dashboardExperiences.appendChild(timelineItem);
+    });
+
+    // Only add event listeners if authenticated
+    if (isAuthenticated) {
+        experienceList.querySelectorAll('.experience-edit').forEach((button) => {
+            button.addEventListener('click', () => {
+                const experienceId = button.getAttribute('data-id');
+                const experiences = loadExperiencePosts();
+                const experience = experiences.find((item) => item.id === experienceId);
+                if (!experience) return;
+                document.getElementById('experienceTitle').value = experience.title;
+                document.getElementById('experienceCompany').value = experience.company;
+                document.getElementById('experiencePeriod').value = experience.period;
+                document.getElementById('experienceLocation').value = experience.location;
+                document.getElementById('experienceDescription').value = experience.description;
+                document.getElementById('experienceAchievements').value = experience.achievements;
+                document.getElementById('experienceTags').value = experience.tags;
+                document.getElementById('experienceIsCurrent').checked = experience.isCurrent || false;
+                document.getElementById('experienceIndex').value = experience.id;
+            });
+        });
+
+        experienceList.querySelectorAll('.experience-delete').forEach((button) => {
+            button.addEventListener('click', () => {
+                const experienceId = button.getAttribute('data-id');
+                const experiences = loadExperiencePosts().filter((item) => item.id !== experienceId);
+                localStorage.setItem('portfolio-experience-posts', JSON.stringify(experiences));
+                renderExperiencePosts(experiences, experienceList, dashboardExperiences);
+            });
+        });
+    }
+}
+
+function initDashboardTabs() {
+    const tabs = document.querySelectorAll('.dashboard-tab');
+    const tabContents = document.querySelectorAll('.dashboard-tab-content');
+
+    tabs.forEach(tab => {
+        tab.addEventListener('click', () => {
+            // Remove active class from all tabs
+            tabs.forEach(t => t.classList.remove('active'));
+            tabContents.forEach(tc => tc.classList.remove('active'));
+
+            // Add active class to clicked tab
+            tab.classList.add('active');
+            const tabName = tab.getAttribute('data-tab');
+            document.querySelector(`.dashboard-tab-content[data-tab="${tabName}"]`).classList.add('active');
+        });
+    });
+}
+
+function initProjectCarousel() {
+    // Initialize dynamic projects carousel
+    const dashboardPostsCarousel = document.getElementById('dashboardPosts');
+    const projectsPrev = document.getElementById('projectsPrev');
+    const projectsNext = document.getElementById('projectsNext');
+    
+    if (projectsPrev && projectsNext && dashboardPostsCarousel) {
+        projectsPrev.addEventListener('click', () => {
+            dashboardPostsCarousel.scrollBy({ left: -400, behavior: 'smooth' });
+        });
+        projectsNext.addEventListener('click', () => {
+            dashboardPostsCarousel.scrollBy({ left: 400, behavior: 'smooth' });
+        });
+    }
+}
+
+function renderTags(tagString) {
+    if (!tagString) return '';
+    return tagString.split(',').map((tag) => `<span class="tag">${escapeHtml(tag.trim())}</span>`).join('');
+}
+
+function escapeHtml(text) {
+    return text
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;')
+        .replace(/'/g, '&#039;');
+}
+
+function escapeAttribute(url) {
+    return url.replace(/"/g, '%22').replace(/'/g, '%27');
+}
 
 function initMobileMenu() {
     const menuToggle = document.getElementById('menuToggle');
