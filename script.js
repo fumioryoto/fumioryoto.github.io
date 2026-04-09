@@ -393,6 +393,19 @@ function renderDashboardPosts(posts, dashboardList, dashboardPosts) {
     if (posts.length === 0) {
         if (isAuthenticated) {
             dashboardList.innerHTML = '<p class="empty-message">No work posts yet. Add one using the dashboard form.</p>';
+        } else {
+            // Show placeholder for public users when no projects exist
+            const placeholder = document.createElement('div');
+            placeholder.className = 'project-card';
+            placeholder.style.cssText = 'flex: 0 0 300px; background: transparent; border: none; display: flex; align-items: center; justify-content: center; min-height: 200px;';
+            placeholder.innerHTML = `
+                <div style="text-align: center; color: var(--text-secondary);">
+                    <i class="fas fa-folder-open" style="font-size: 3rem; margin-bottom: 1rem; opacity: 0.5;"></i>
+                    <p>Projects will appear here</p>
+                    <p style="font-size: 0.9rem; margin-top: 0.5rem;">Check back soon for updates</p>
+                </div>
+            `;
+            dashboardPosts.appendChild(placeholder);
         }
         return;
     }
@@ -483,6 +496,17 @@ function renderPublicExperience(experiences, dashboardExperiences) {
     dashboardExperiences.innerHTML = '';
 
     if (experiences.length === 0) {
+        // Show placeholder when no experience data exists
+        const placeholder = document.createElement('div');
+        placeholder.className = 'empty-timeline-message';
+        placeholder.innerHTML = `
+            <div style="text-align: center; padding: 3rem 1rem; color: var(--text-secondary);">
+                <i class="fas fa-briefcase" style="font-size: 3rem; margin-bottom: 1rem; opacity: 0.5;"></i>
+                <p>Experience timeline will appear here</p>
+                <p style="font-size: 0.9rem; margin-top: 0.5rem;">Add your work experience via the <a href="#dashboard" style="color: var(--primary);">dashboard</a></p>
+            </div>
+        `;
+        dashboardExperiences.appendChild(placeholder);
         return;
     }
 
@@ -601,7 +625,13 @@ function saveExperiencePost(experience) {
 
 function loadExperiencePosts() {
     const experiences = localStorage.getItem('portfolio-experience-posts');
-    return experiences ? JSON.parse(experiences) : [];
+    
+    // If no data exists, return empty array (or seed data for first visit)
+    if (!experiences) {
+        return [];
+    }
+    
+    return JSON.parse(experiences);
 }
 
 function renderExperiencePosts(experiences, experienceList, dashboardExperiences) {
