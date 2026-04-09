@@ -2535,25 +2535,35 @@ img {
         height: 280px;
     }
     
-    .floating-badge {
-        display: none;
-    }
-    
     .scroll-indicator {
         bottom: 1rem;
     }
     
-    .badge-content {
-        display: none;
-    }
-    
     .floating-badge {
+        display: flex;
         min-width: auto;
-        padding: 0.8rem 1rem;
+        padding: 0.7rem 0.9rem;
+        font-size: 0.85rem;
+        position: absolute;
+        gap: 0.7rem;
     }
     
     .floating-badge i {
-        font-size: 1.5rem;
+        font-size: 1.3rem;
+    }
+    
+    .badge-content {
+        display: flex;
+        flex-direction: column;
+        gap: 0.2rem;
+    }
+    
+    .badge-title {
+        font-size: 0.8rem;
+    }
+    
+    .badge-libs {
+        font-size: 0.6rem;
     }
 }
 
