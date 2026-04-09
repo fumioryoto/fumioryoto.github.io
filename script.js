@@ -19,6 +19,7 @@ function initializeApp() {
     initFormHandlers();
     checkAuth();
     initDashboard();
+    initPublicExperience();
     initExperienceDashboard();
     initDashboardTabs();
     initProjectCarousel();
@@ -466,6 +467,70 @@ function renderDashboardPosts(posts, dashboardList, dashboardPosts) {
     }
 }
 
+function initPublicExperience() {
+    const dashboardExperiences = document.getElementById('dashboardExperiences');
+    
+    if (!dashboardExperiences) return;
+
+    // Always load and render experiences to public section (regardless of auth)
+    const savedExperiences = loadExperiencePosts();
+    if (savedExperiences && savedExperiences.length > 0) {
+        renderPublicExperience(savedExperiences, dashboardExperiences);
+    }
+}
+
+function renderPublicExperience(experiences, dashboardExperiences) {
+    dashboardExperiences.innerHTML = '';
+
+    if (experiences.length === 0) {
+        return;
+    }
+
+    // Sort experiences: current first, then by creation date
+    const sortedExperiences = [...experiences].sort((a, b) => {
+        if (a.isCurrent && !b.isCurrent) return -1;
+        if (!a.isCurrent && b.isCurrent) return 1;
+        return new Date(b.createdAt) - new Date(a.createdAt);
+    });
+
+    sortedExperiences.forEach((experience) => {
+        // Always render to experience section (public view)
+        const timelineItem = document.createElement('div');
+        timelineItem.className = 'timeline-item';
+        const currentBadgeHTML = experience.isCurrent ? '<div class="timeline-badge">Current</div>' : '';
+        timelineItem.innerHTML = `
+            <div class="timeline-marker"></div>
+            <div class="timeline-content">
+                <div class="timeline-header">
+                    <div class="timeline-year">${escapeHtml(experience.period)}</div>
+                    ${currentBadgeHTML}
+                </div>
+                <h3 class="timeline-title">${escapeHtml(experience.title)}</h3>
+                <div class="timeline-company">
+                    <i class="fas fa-building"></i>
+                    ${escapeHtml(experience.company)}${experience.location ? ` - ${escapeHtml(experience.location)}` : ''}
+                </div>
+                <p class="timeline-description">${escapeHtml(experience.description)}</p>
+                <div class="timeline-achievements">
+                    ${experience.achievements.split('\n').filter(a => a.trim()).map(achievement =>
+                        `<div class="achievement-item">
+                            <i class="fas fa-check-circle"></i>
+                            <span>${escapeHtml(achievement.trim())}</span>
+                        </div>`
+                    ).join('')}
+                </div>
+                <div class="timeline-tags">
+                    ${experience.tags.split(',').map(tag =>
+                        `<span class="tag">${escapeHtml(tag.trim())}</span>`
+                    ).join('')}
+                </div>
+            </div>
+        `;
+
+        dashboardExperiences.appendChild(timelineItem);
+    });
+}
+
 function initExperienceDashboard() {
     const isAuthenticated = localStorage.getItem('portfolio-auth') === 'true';
     if (!isAuthenticated) return;
@@ -477,7 +542,7 @@ function initExperienceDashboard() {
 
     if (!experienceForm || !experienceList || !dashboardExperiences) return;
 
-    // Always load and render experiences
+    // Load and render experiences for dashboard
     const savedExperiences = loadExperiencePosts();
     renderExperiencePosts(savedExperiences, experienceList, dashboardExperiences);
 
@@ -500,6 +565,8 @@ function initExperienceDashboard() {
 
         const experiences = saveExperiencePost(experience);
         renderExperiencePosts(experiences, experienceList, dashboardExperiences);
+        // Also update public experience view
+        renderPublicExperience(experiences, dashboardExperiences);
         experienceForm.reset();
         document.getElementById('experienceIndex').value = '';
     });
@@ -540,13 +607,13 @@ function loadExperiencePosts() {
 function renderExperiencePosts(experiences, experienceList, dashboardExperiences) {
     const isAuthenticated = localStorage.getItem('portfolio-auth') === 'true';
 
-    // Always render to experience section
-    dashboardExperiences.innerHTML = '';
+    if (!isAuthenticated) return;
+
+    // Only render dashboard edit interface (when authenticated)
+    experienceList.innerHTML = '';
 
     if (experiences.length === 0) {
-        if (isAuthenticated) {
-            experienceList.innerHTML = '<p class="empty-message">No experience entries yet. Add one using the experience form.</p>';
-        }
+        experienceList.innerHTML = '<p class="empty-message">No experience entries yet. Add one using the experience form.</p>';
         return;
     }
 
@@ -558,62 +625,25 @@ function renderExperiencePosts(experiences, experienceList, dashboardExperiences
     });
 
     sortedExperiences.forEach((experience) => {
-        // Only render dashboard list if authenticated
-        if (isAuthenticated) {
-            const card = document.createElement('div');
-            card.className = 'dashboard-card';
-            const currentBadge = experience.isCurrent ? '<span class="current-badge">Current</span>' : '';
-            card.innerHTML = `
-                <div class="dashboard-card-content">
-                    <div class="dashboard-card-header">
-                        <h4>${escapeHtml(experience.title)}${currentBadge}</h4>
-                        <span>${escapeHtml(experience.company)} • ${escapeHtml(experience.period)}</span>
-                    </div>
-                    <p>${escapeHtml(experience.description)}</p>
-                    <div class="dashboard-card-tags">${renderTags(experience.tags)}</div>
+        // Render dashboard edit interface
+        const card = document.createElement('div');
+        card.className = 'dashboard-card';
+        const currentBadge = experience.isCurrent ? '<span class="current-badge">Current</span>' : '';
+        card.innerHTML = `
+            <div class="dashboard-card-content">
+                <div class="dashboard-card-header">
+                    <h4>${escapeHtml(experience.title)}${currentBadge}</h4>
+                    <span>${escapeHtml(experience.company)} • ${escapeHtml(experience.period)}</span>
                 </div>
-                <div class="dashboard-card-actions">
-                    <button class="btn btn-secondary experience-edit" data-id="${experience.id}">Edit</button>
-                    <button class="btn btn-secondary experience-delete" data-id="${experience.id}">Delete</button>
-                </div>
-            `;
-            experienceList.appendChild(card);
-        }
-
-        // Always render to experience section
-        const timelineItem = document.createElement('div');
-        timelineItem.className = 'timeline-item';
-        const currentBadgeHTML = experience.isCurrent ? '<div class="timeline-badge">Current</div>' : '';
-        timelineItem.innerHTML = `
-            <div class="timeline-marker"></div>
-            <div class="timeline-content">
-                <div class="timeline-header">
-                    <div class="timeline-year">${escapeHtml(experience.period)}</div>
-                    ${currentBadgeHTML}
-                </div>
-                <h3 class="timeline-title">${escapeHtml(experience.title)}</h3>
-                <div class="timeline-company">
-                    <i class="fas fa-building"></i>
-                    ${escapeHtml(experience.company)}${experience.location ? ` - ${escapeHtml(experience.location)}` : ''}
-                </div>
-                <p class="timeline-description">${escapeHtml(experience.description)}</p>
-                <div class="timeline-achievements">
-                    ${experience.achievements.split('\n').filter(a => a.trim()).map(achievement =>
-                        `<div class="achievement-item">
-                            <i class="fas fa-check-circle"></i>
-                            <span>${escapeHtml(achievement.trim())}</span>
-                        </div>`
-                    ).join('')}
-                </div>
-                <div class="timeline-tags">
-                    ${experience.tags.split(',').map(tag =>
-                        `<span class="tag">${escapeHtml(tag.trim())}</span>`
-                    ).join('')}
-                </div>
+                <p>${escapeHtml(experience.description)}</p>
+                <div class="dashboard-card-tags">${renderTags(experience.tags)}</div>
+            </div>
+            <div class="dashboard-card-actions">
+                <button class="btn btn-secondary experience-edit" data-id="${experience.id}">Edit</button>
+                <button class="btn btn-secondary experience-delete" data-id="${experience.id}">Delete</button>
             </div>
         `;
-
-        dashboardExperiences.appendChild(timelineItem);
+        experienceList.appendChild(card);
     });
 
     // Only add event listeners if authenticated
@@ -642,6 +672,8 @@ function renderExperiencePosts(experiences, experienceList, dashboardExperiences
                 const experiences = loadExperiencePosts().filter((item) => item.id !== experienceId);
                 localStorage.setItem('portfolio-experience-posts', JSON.stringify(experiences));
                 renderExperiencePosts(experiences, experienceList, dashboardExperiences);
+                // Also update public experience view
+                renderPublicExperience(experiences, dashboardExperiences);
             });
         });
     }
