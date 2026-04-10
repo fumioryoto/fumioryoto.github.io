@@ -824,24 +824,24 @@ img {
     animation-delay: 2s;
 }
 
-@media (max-width: 768px) {
+@media (max-width: 779px) {
     .badge-1 {
-        top: 25%;
-        left: -15px;
+        top: 97%;
+        left: 40px;
         right: auto;
         bottom: auto;
     }
     
     .badge-2 {
-        top: 45%;
-        right: -15px;
+        top: 20%;
+        right: -70px;
         left: auto;
         bottom: auto;
     }
     
     .badge-3 {
-        bottom: -25px;
-        right: -25px;
+        bottom: 90px;
+        right: 140px;
         left: auto;
         top: auto;
     }
