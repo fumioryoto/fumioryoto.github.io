@@ -788,10 +788,19 @@ function initProjectCarousel() {
     
     if (projectsPrev && projectsNext && dashboardPostsCarousel) {
         projectsPrev.addEventListener('click', () => {
-            dashboardPostsCarousel.scrollBy({ left: -400, behavior: 'smooth' });
+            const currentScroll = dashboardPostsCarousel.scrollLeft;
+            dashboardPostsCarousel.scrollLeft = currentScroll - 400;
         });
         projectsNext.addEventListener('click', () => {
-            dashboardPostsCarousel.scrollBy({ left: 400, behavior: 'smooth' });
+            const currentScroll = dashboardPostsCarousel.scrollLeft;
+            dashboardPostsCarousel.scrollLeft = currentScroll + 400;
+        });
+        console.log('✅ Project carousel initialized');
+    } else {
+        console.warn('❌ Project carousel elements not found:', {
+            carousel: !!dashboardPostsCarousel,
+            prev: !!projectsPrev,
+            next: !!projectsNext
         });
     }
 }
