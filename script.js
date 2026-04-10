@@ -781,28 +781,48 @@ function initDashboardTabs() {
 }
 
 function initProjectCarousel() {
-    // Initialize dynamic projects carousel
-    const dashboardPostsCarousel = document.getElementById('dashboardPosts');
-    const projectsPrev = document.getElementById('projectsPrev');
-    const projectsNext = document.getElementById('projectsNext');
-    
-    if (projectsPrev && projectsNext && dashboardPostsCarousel) {
-        projectsPrev.addEventListener('click', () => {
-            const currentScroll = dashboardPostsCarousel.scrollLeft;
-            dashboardPostsCarousel.scrollLeft = currentScroll - 400;
-        });
-        projectsNext.addEventListener('click', () => {
-            const currentScroll = dashboardPostsCarousel.scrollLeft;
-            dashboardPostsCarousel.scrollLeft = currentScroll + 400;
-        });
-        console.log('✅ Project carousel initialized');
-    } else {
-        console.warn('❌ Project carousel elements not found:', {
-            carousel: !!dashboardPostsCarousel,
-            prev: !!projectsPrev,
-            next: !!projectsNext
-        });
+    const carousel = document.getElementById('dashboardPosts');
+    const prevBtn = document.getElementById('projectsPrev');
+    const nextBtn = document.getElementById('projectsNext');
+
+    if (!carousel || !prevBtn || !nextBtn) {
+        console.warn('Carousel elements missing');
+        return;
     }
+
+    // Ensure horizontal scrolling works
+    if (window.getComputedStyle(carousel).overflowX !== 'auto' &&
+        window.getComputedStyle(carousel).overflowX !== 'scroll') {
+        carousel.style.overflowX = 'auto';
+        carousel.style.scrollBehavior = 'smooth';
+    }
+
+    const scrollStep = () => {
+        // Get visible width of carousel and scroll by that amount (or fixed)
+        const visibleWidth = carousel.clientWidth;
+        return visibleWidth * 0.8; // scroll 80% of container width
+    };
+
+    prevBtn.addEventListener('click', (e) => {
+        e.preventDefault();
+        carousel.scrollBy({ left: -scrollStep(), behavior: 'smooth' });
+        console.log('Scrolled left');
+    });
+
+    nextBtn.addEventListener('click', (e) => {
+        e.preventDefault();
+        carousel.scrollBy({ left: scrollStep(), behavior: 'smooth' });
+        console.log('Scrolled right');
+    });
+
+    console.log('Carousel ready');
+}
+
+// Run after DOM is ready
+if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', initProjectCarousel);
+} else {
+    initProjectCarousel(); // DOM already loaded
 }
 
 function renderTags(tagString) {

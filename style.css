@@ -1423,6 +1423,9 @@ img {
     font-size: 1.1rem;
     transition: all var(--transition);
     flex-shrink: 0;
+    pointer-events: auto;
+    z-index: 10;
+    position: relative;
 }
 
 .carousel-btn:hover {
