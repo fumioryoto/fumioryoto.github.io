@@ -1,6 +1,18 @@
 {
   "experiences": [
     {
+      "title": "Open Source Junior Developer",
+      "company": "Github",
+      "period": "2022-2023",
+      "location": "",
+      "description": "Learned the basic stack for developing and shipped code to GitHub in a regular basis for collaboration in Open source projects.",
+      "achievements": "learned to code\nContributed in open source community",
+      "tags": "programming, coding, foundation",
+      "isCurrent": false,
+      "createdAt": "2026-06-08T08:45:17.148Z",
+      "id": "1780908317148"
+    },
+    {
       "title": "Penetration Tester & Bug Bounty Hunter",
       "company": "at Hackerone, Bugcrowd and Fiverr.",
       "period": "2025 - Present",

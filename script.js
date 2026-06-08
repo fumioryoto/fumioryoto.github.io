@@ -1,7 +1,6 @@
 const AppState = {
     currentLang: 'en',
-    currentTheme: 'dark',
-    currentSection: 'home',
+        currentSection: 'home',
     isMenuOpen: false,
     isLoaded: false,
     portfolioDataLoaded: false,
@@ -44,27 +43,22 @@ function loadPortfolioDataFile() {
 function initializeApp() {
     loadPreferences();
     initLanguage();
-    initTheme();
     initNavigation();
     initScrollEffects();
     initFormHandlers();
     checkAuth();
-    initDashboard();
     initPublicExperience();
     initExperienceDashboard();
     initDashboardTabs();
     initProjectCarousel();
     initMobileMenu();
     updateLanguageUI();
-    updateThemeUI();
     AppState.isLoaded = true;
 }
 
 function loadPreferences() {
     const savedLang = localStorage.getItem('portfolio-lang');
-    const savedTheme = localStorage.getItem('portfolio-theme');
     if (savedLang) AppState.currentLang = savedLang;
-    if (savedTheme) AppState.currentTheme = savedTheme;
 }
 
 function initLanguage() {
@@ -128,36 +122,6 @@ function updateLanguageUI() {
         const langText = langToggle.querySelector('.lang-text');
         if (langText) {
             langText.textContent = AppState.currentLang === 'en' ? 'AR' : 'EN';
-        }
-    }
-}
-
-function initTheme() {
-    const themeToggle = document.getElementById('themeToggle');
-    if (themeToggle) {
-        themeToggle.addEventListener('click', toggleTheme);
-    }
-    setTheme(AppState.currentTheme);
-}
-
-function toggleTheme() {
-    const newTheme = AppState.currentTheme === 'dark' ? 'light' : 'dark';
-    setTheme(newTheme);
-    localStorage.setItem('portfolio-theme', newTheme);
-}
-
-function setTheme(theme) {
-    AppState.currentTheme = theme;
-    document.body.setAttribute('data-theme', theme);
-    updateThemeUI();
-}
-
-function updateThemeUI() {
-    const themeToggle = document.getElementById('themeToggle');
-    if (themeToggle) {
-        const icon = themeToggle.querySelector('i');
-        if (icon) {
-            icon.className = AppState.currentTheme === 'dark' ? 'fas fa-sun' : 'fas fa-moon';
         }
     }
 }
@@ -813,6 +777,32 @@ function initProjectCarousel() {
         e.preventDefault();
         carousel.scrollBy({ left: scrollStep(), behavior: 'smooth' });
         console.log('Scrolled right');
+    });
+
+    let isDown = false;
+    let startX;
+    let scrollLeft;
+
+    carousel.addEventListener('mousedown', (e) => {
+        isDown = true;
+        startX = e.pageX - carousel.offsetLeft;
+        scrollLeft = carousel.scrollLeft;
+    });
+
+    carousel.addEventListener('mouseleave', () => {
+        isDown = false;
+    });
+
+    carousel.addEventListener('mouseup', () => {
+        isDown = false;
+    });
+
+    carousel.addEventListener('mousemove', (e) => {
+        if (!isDown) return;
+        e.preventDefault();
+        const x = e.pageX - carousel.offsetLeft;
+        const walk = (x - startX) * 2;
+        carousel.scrollLeft = scrollLeft - walk;
     });
 
     console.log('Carousel ready');
